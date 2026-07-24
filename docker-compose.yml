@@ -13,6 +13,21 @@ services:
     volumes:
       - n8n_data:/home/node/.n8n
       - ./local-files:/files
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:16
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: walletia
+      POSTGRES_USER: walletia
+      POSTGRES_PASSWORD: walletia123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
   n8n_data:
+  postgres_data:
