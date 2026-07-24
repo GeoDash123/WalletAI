@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Picker } from "@react-native-picker/picker";
 import { CATEGORIES } from "@/constants/categories";
+import Card from "@/components/ui/Card";
 import {
     View,
     Text,
@@ -12,7 +13,7 @@ import {
 
 import { createExpense } from "@/services/expenseService";
 
-export default function HomeScreen() {
+export default function ExpenseForm() {
 
     const [amount, setAmount] = useState("");
     const [category, setCategory] = useState(CATEGORIES[0]);
@@ -55,68 +56,58 @@ export default function HomeScreen() {
 
     return (
 
-        <View style={styles.container}>
+            <Card>
 
-            <Text style={styles.title}>WalletIA</Text>
+                <Text style={styles.title}>Registrar gasto</Text>
 
-            <TextInput
-                placeholder="Monto"
-                keyboardType="numeric"
-                value={amount}
-                onChangeText={setAmount}
-                style={styles.input}
-            />
+                <TextInput
+                    placeholder="Monto"
+                    keyboardType="numeric"
+                    value={amount}
+                    onChangeText={setAmount}
+                    style={styles.input}
+                />
 
-            <Text style={styles.label}>
-                Categoría
-            </Text>
+                <Text style={styles.label}>
+                    Categoría
+                </Text>
 
-            <View style={styles.pickerContainer}>
+                <View style={styles.pickerContainer}>
 
-                <Picker
-                    selectedValue={category}
-                    onValueChange={(value) => setCategory(value)}
-                >
+                    <Picker
+                        selectedValue={category}
+                        onValueChange={(value) => setCategory(value)}
+                    >
+                        {CATEGORIES.map((item) => (
+                            <Picker.Item
+                                key={item}
+                                label={item}
+                                value={item}
+                            />
+                        ))}
+                    </Picker>
 
-                    {CATEGORIES.map((item) => (
+                </View>
 
-                        <Picker.Item
-                            key={item}
-                            label={item}
-                            value={item}
-                        />
+                <TextInput
+                    placeholder="Descripción"
+                    value={description}
+                    onChangeText={setDescription}
+                    style={styles.input}
+                />
 
-                    ))}
+                <Button
+                    title="Guardar gasto"
+                    onPress={handleSave}
+                />
 
-                </Picker>
-
-            </View>
-
-            <TextInput
-                placeholder="Descripción"
-                value={description}
-                onChangeText={setDescription}
-                style={styles.input}
-            />
-
-            <Button
-                title="Guardar gasto"
-                onPress={handleSave}
-            />
-
-        </View>
+            </Card>
 
     );
 
 }
 
 const styles = StyleSheet.create({
-
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        padding: 20,
-    },
 
     title: {
         fontSize: 28,

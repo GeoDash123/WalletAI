@@ -1,16 +1,24 @@
-import { View, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet } from "react-native";
 
-import ExpenseForm from "../../components/expenses/ExpenseForm";
+import DashboardCard from "@/components/dashboard/DashboardCard";
+import ExpenseForm from "@/components/expenses/ExpenseForm";
+import { useDashboard } from "@/hooks/useDashboard";
 
 export default function HomeScreen() {
 
+    const { dashboard } = useDashboard();
+
     return (
 
-        <View style={styles.container}>
+        <ScrollView contentContainerStyle={styles.container}>
+
+            {dashboard && (
+                <DashboardCard dashboard={dashboard} />
+            )}
 
             <ExpenseForm />
 
-        </View>
+        </ScrollView>
 
     );
 
@@ -19,7 +27,9 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
 
     container: {
-        flex: 1,
+        padding: 20,
+        backgroundColor: "#F3F4F6",
+        flexGrow: 1,
     },
 
 });
