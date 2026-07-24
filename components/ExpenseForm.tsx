@@ -18,6 +18,21 @@ export default function HomeScreen() {
 
     async function handleSave() {
 
+        if (!amount || Number(amount) <= 0) {
+            Alert.alert("Error", "Ingresa un monto válido.");
+            return;
+        }
+
+        if (!category.trim()) {
+            Alert.alert("Error", "Selecciona una categoría.");
+            return;
+        }
+
+        if (!description.trim()) {
+            Alert.alert("Error", "Ingresa una descripción.");
+            return;
+        }
+
         try {
 
             const result = await createExpense({
