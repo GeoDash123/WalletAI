@@ -110,9 +110,10 @@ export default function ExpenseForm() {
 const styles = StyleSheet.create({
 
     title: {
-        fontSize: 28,
-        fontWeight: "bold",
-        marginBottom: 30,
+        fontSize: 22,
+        fontWeight: "700",
+        marginBottom: 24,
+        color: "#111827",
     },
 
     label: {
