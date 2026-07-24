@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { Picker } from "@react-native-picker/picker";
+import { CATEGORIES } from "@/constants/categories";
 import {
     View,
     Text,
@@ -13,18 +15,18 @@ import { createExpense } from "@/services/expenseService";
 export default function HomeScreen() {
 
     const [amount, setAmount] = useState("");
-    const [category, setCategory] = useState("");
+    const [category, setCategory] = useState(CATEGORIES[0]);
     const [description, setDescription] = useState("");
 
     async function handleSave() {
 
-        if (!amount || Number(amount) <= 0) {
-            Alert.alert("Error", "Ingresa un monto válido.");
+        if (category === "Selecciona una categoría") {
+            Alert.alert("Error", "Selecciona una categoría.");
             return;
         }
 
-        if (!category.trim()) {
-            Alert.alert("Error", "Selecciona una categoría.");
+        if (!amount || Number(amount) <= 0) {
+            Alert.alert("Error", "Ingresa un monto válido.");
             return;
         }
 
@@ -65,12 +67,30 @@ export default function HomeScreen() {
                 style={styles.input}
             />
 
-            <TextInput
-                placeholder="Categoría"
-                value={category}
-                onChangeText={setCategory}
-                style={styles.input}
-            />
+            <Text style={styles.label}>
+                Categoría
+            </Text>
+
+            <View style={styles.pickerContainer}>
+
+                <Picker
+                    selectedValue={category}
+                    onValueChange={(value) => setCategory(value)}
+                >
+
+                    {CATEGORIES.map((item) => (
+
+                        <Picker.Item
+                            key={item}
+                            label={item}
+                            value={item}
+                        />
+
+                    ))}
+
+                </Picker>
+
+            </View>
 
             <TextInput
                 placeholder="Descripción"
@@ -104,12 +124,25 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
 
+    label: {
+        fontSize: 14,
+        fontWeight: "600",
+        marginBottom: 6,
+    },
+
     input: {
         borderWidth: 1,
         borderColor: "#ccc",
         padding: 12,
         marginBottom: 15,
         borderRadius: 8,
+    },
+
+    pickerContainer: {
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 8,
+        marginBottom: 15,
     },
 
 });
