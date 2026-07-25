@@ -1,3 +1,4 @@
+import { CategoryIconName, CategoryIcons } from "@/constants/categoryIcons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
@@ -16,6 +17,9 @@ export default function ExpenseItem({ expense, onPress }: Props) {
     ? new Date(expense.created_at).toLocaleDateString("es-MX")
     : "";
 
+  const icon: CategoryIconName =
+    CategoryIcons[expense.category as keyof typeof CategoryIcons] ?? "cash";
+
   return (
     <Pressable onPress={onPress}>
       <Card>
@@ -23,7 +27,7 @@ export default function ExpenseItem({ expense, onPress }: Props) {
           <View style={styles.left}>
             <View style={styles.iconContainer}>
               <MaterialCommunityIcons
-                name="cash"
+                name={icon}
                 size={24}
                 color={Colors.primary}
               />
