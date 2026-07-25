@@ -1,72 +1,39 @@
-import {
-    FlatList,
-    View,
-    ActivityIndicator,
-    StyleSheet
-} from "react-native";
+import { ActivityIndicator, FlatList, StyleSheet, View } from "react-native";
 
-import ExpenseCard from "../../components/expenses/ExpenseCard";
+import ExpenseItem from "@/components/expenses/ExpenseItem";
 import { useExpenses } from "../../hooks/useExpenses";
 
 export default function HistoryScreen() {
+  const { expenses, loading } = useExpenses();
 
-    const {
-        expenses,
-        loading
-    } = useExpenses();
-
-    if (loading) {
-
-        return (
-
-            <View style={styles.loading}>
-
-                <ActivityIndicator size="large"/>
-
-            </View>
-
-        );
-
-    }
-
+  if (loading) {
     return (
-
-        <FlatList
-
-            data={expenses}
-
-            keyExtractor={(item) => item.id!.toString()}
-
-            renderItem={({ item }) => (
-
-                <ExpenseCard expense={item}/>
-
-            )}
-
-            contentContainerStyle={styles.container}
-
-        />
-
+      <View style={styles.loading}>
+        <ActivityIndicator size="large" />
+      </View>
     );
+  }
 
+  return (
+    <FlatList
+      data={expenses}
+      keyExtractor={(item) => item.id!.toString()}
+      renderItem={({ item }) => <ExpenseItem expense={item} />}
+      contentContainerStyle={styles.container}
+    />
+  );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    padding: 15,
+  },
 
-    container: {
+  loading: {
+    flex: 1,
 
-        padding: 15,
+    justifyContent: "center",
 
-    },
-
-    loading: {
-
-        flex:1,
-
-        justifyContent:"center",
-
-        alignItems:"center"
-
-    }
-
+    alignItems: "center",
+  },
 });

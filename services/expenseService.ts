@@ -10,7 +10,8 @@ export async function createExpense(expense: Expense) {
 
 //Consultar Historial
 export async function getExpenses() {
-  const response = await api.get("/webhook-test/expenses");
+  //const response = await api.get("/webhook-test/expenses");
+  const response = await api.get("/webhook/expenses");
   return response.data;
 }
 
