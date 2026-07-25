@@ -1,5 +1,6 @@
 import Card from "@/components/ui/Card";
 import { CATEGORIES } from "@/constants/categories";
+import { Colors } from "@/constants/colors";
 import { useState } from "react";
 import { Alert, StyleSheet, Text } from "react-native";
 
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "700",
     marginBottom: 24,
-    color: "#111827",
+    color: Colors.text,
   },
 
   label: {
@@ -86,7 +87,7 @@ const styles = StyleSheet.create({
 
   input: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: Colors.border,
     padding: 12,
     marginBottom: 15,
     borderRadius: 8,
@@ -94,7 +95,7 @@ const styles = StyleSheet.create({
 
   pickerContainer: {
     borderWidth: 1,
-    borderColor: "#ccc",
+    borderColor: Colors.border,
     borderRadius: 8,
     marginBottom: 15,
   },

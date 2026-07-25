@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/colors";
 import { Picker } from "@react-native-picker/picker";
 import { StyleSheet, View } from "react-native";
 
@@ -21,9 +22,9 @@ export default function Select({ value, items, onChange }: Props) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: "#FFFFFF",
+    backgroundColor: Colors.surface,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
+    borderColor: Colors.border,
     borderRadius: 12,
     marginBottom: 15,
     overflow: "hidden",

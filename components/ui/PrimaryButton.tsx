@@ -1,3 +1,4 @@
+import { Colors } from "@/constants/colors";
 import { Pressable, StyleSheet, Text } from "react-native";
 
 type Props = {
@@ -18,7 +19,7 @@ export default function PrimaryButton({ title, onPress }: Props) {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: "#2563EB",
+    backgroundColor: Colors.primary,
     paddingVertical: 16,
     borderRadius: 12,
     alignItems: "center",
@@ -30,7 +31,7 @@ const styles = StyleSheet.create({
   },
 
   text: {
-    color: "#FFFFFF",
+    color: Colors.surface,
     fontWeight: "bold",
     fontSize: 16,
   },
