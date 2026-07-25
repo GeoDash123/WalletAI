@@ -1,21 +1,43 @@
 import Card from "@/components/ui/Card";
+import Input from "@/components/ui/Input";
+import PrimaryButton from "@/components/ui/PrimaryButton";
+import Select from "@/components/ui/Select";
+import { createExpense, updateExpense } from "@/services/expenseService";
+
 import { CATEGORIES } from "@/constants/categories";
 import { Colors } from "@/constants/colors";
+
+
+import { Expense } from "@/types/Expense";
+
 import { useState } from "react";
 import { Alert, StyleSheet, Text } from "react-native";
 
-import PrimaryButton from "@/components/ui/PrimaryButton";
-import { createExpense } from "@/services/expenseService";
-import Input from "../ui/Input";
-import Select from "../ui/Select";
+type Props = {
+  mode?: "create" | "edit";
+  initialValues?: Expense;
+  onSuccess?: () => void;
+};
 
-export default function ExpenseForm() {
-  const [amount, setAmount] = useState("");
-  const [category, setCategory] = useState(CATEGORIES[0]);
-  const [description, setDescription] = useState("");
+export default function ExpenseForm({
+  mode = "create",
+  initialValues,
+  onSuccess,
+}: Props) {
+  const [amount, setAmount] = useState(
+    initialValues ? String(initialValues.amount) : "",
+  );
 
-  async function handleSave() {
-    if (category === "Selecciona una categoría") {
+  const [category, setCategory] = useState(
+    initialValues?.category ?? CATEGORIES[0],
+  );
+
+  const [description, setDescription] = useState(
+    initialValues?.description ?? "",
+  );
+
+  async function handleSubmit() {
+    if (category === CATEGORIES[0]) {
       Alert.alert("Error", "Selecciona una categoría.");
       return;
     }
@@ -30,14 +52,28 @@ export default function ExpenseForm() {
       return;
     }
 
-    try {
-      const result = await createExpense({
-        amount: Number(amount),
-        category,
-        description,
-      });
+    const expense = {
+      amount: Number(amount),
+      category,
+      description,
+    };
 
-      Alert.alert("Respuesta", JSON.stringify(result));
+    try {
+      if (mode === "create") {
+        await createExpense(expense);
+
+        Alert.alert("Éxito", "Gasto registrado correctamente.");
+
+        setAmount("");
+        setCategory(CATEGORIES[0]);
+        setDescription("");
+      } else {
+        await updateExpense(initialValues!.id!, expense);
+
+        Alert.alert("Éxito", "Gasto actualizado correctamente.");
+      }
+
+      onSuccess?.();
     } catch (error) {
       Alert.alert("Error", "No fue posible conectar con el servidor.");
     }
@@ -45,7 +81,9 @@ export default function ExpenseForm() {
 
   return (
     <Card>
-      <Text style={styles.title}>Registrar gasto</Text>
+      <Text style={styles.title}>
+        {mode === "create" ? "Registrar gasto" : "Editar gasto"}
+      </Text>
 
       <Input
         placeholder="Monto"
@@ -66,7 +104,10 @@ export default function ExpenseForm() {
         style={styles.input}
       />
 
-      <PrimaryButton title="Guardar gasto" onPress={handleSave} />
+      <PrimaryButton
+        title={mode === "create" ? "Guardar gasto" : "Guardar cambios"}
+        onPress={handleSubmit}
+      />
     </Card>
   );
 }
@@ -83,6 +124,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "600",
     marginBottom: 6,
+    color: Colors.text,
   },
 
   input: {
@@ -91,12 +133,5 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 15,
     borderRadius: 8,
-  },
-
-  pickerContainer: {
-    borderWidth: 1,
-    borderColor: Colors.border,
-    borderRadius: 8,
-    marginBottom: 15,
   },
 });

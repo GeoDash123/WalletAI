@@ -15,6 +15,13 @@ export async function getExpenses() {
   return response.data;
 }
 
+//Actualizar gasto
+export async function updateExpense(id: number, expense: Expense) {
+  const response = await api.put(`/walletia/${id}`, expense);
+
+  return response.data;
+}
+
 /*
 export async function updateExpense(...) { }
 export async function deleteExpense(...) { }
