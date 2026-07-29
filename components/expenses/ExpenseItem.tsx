@@ -1,44 +1,68 @@
-import { CategoryIconName, CategoryIcons } from "@/constants/categoryIcons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { useRouter } from "expo-router";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import Card from "@/components/ui/Card";
+import { CategoryIcons } from "@/constants/categoryIcons";
 import { Colors } from "@/constants/colors";
 import { Expense } from "@/types/Expense";
 import { formatCurrency } from "@/utils/currency";
 
+import Card from "@/components/ui/Card";
+
 type Props = {
   expense: Expense;
-  onPress?: () => void;
 };
 
-export default function ExpenseItem({ expense, onPress }: Props) {
+export default function ExpenseItem({ expense }: Props) {
+  const router = useRouter();
+
+  const icon =
+    CategoryIcons[
+      expense.category as keyof typeof CategoryIcons
+    ] ?? "cash";
+
   const date = expense.created_at
     ? new Date(expense.created_at).toLocaleDateString("es-MX")
     : "";
 
-  const icon: CategoryIconName =
-    CategoryIcons[expense.category as keyof typeof CategoryIcons] ?? "cash";
+  function handlePress() {
+    if (expense.id === undefined) {
+      return;
+    }
+
+    router.push({
+      pathname: "/expense/[id]",
+      params: {
+        id: expense.id.toString(),
+      },
+    });
+  }
 
   return (
-    <Pressable onPress={onPress}>
+    <Pressable onPress={handlePress}>
       <Card>
-        <View style={styles.row}>
+        <View style={styles.container}>
           <View style={styles.left}>
             <View style={styles.iconContainer}>
               <MaterialCommunityIcons
-                name={icon}
+                name={icon as any}
                 size={24}
                 color={Colors.primary}
               />
             </View>
 
-            <View>
-              <Text style={styles.category}>{expense.category}</Text>
+            <View style={styles.info}>
+              <Text style={styles.category}>
+                {expense.category}
+              </Text>
 
-              <Text style={styles.description}>{expense.description}</Text>
+              <Text style={styles.description}>
+                {expense.description}
+              </Text>
 
-              <Text style={styles.date}>{date}</Text>
+              <Text style={styles.date}>
+                {date}
+              </Text>
             </View>
           </View>
 
@@ -52,7 +76,7 @@ export default function ExpenseItem({ expense, onPress }: Props) {
 }
 
 const styles = StyleSheet.create({
-  row: {
+  container: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -74,6 +98,10 @@ const styles = StyleSheet.create({
     marginRight: 16,
   },
 
+  info: {
+    flex: 1,
+  },
+
   category: {
     fontSize: 17,
     fontWeight: "600",
@@ -92,6 +120,7 @@ const styles = StyleSheet.create({
   },
 
   amount: {
+    marginLeft: 16,
     fontSize: 18,
     fontWeight: "bold",
     color: Colors.success,

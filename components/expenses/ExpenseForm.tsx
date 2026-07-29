@@ -3,14 +3,10 @@ import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import Select from "@/components/ui/Select";
 import { createExpense, updateExpense } from "@/services/expenseService";
-
 import { CATEGORIES } from "@/constants/categories";
 import { Colors } from "@/constants/colors";
-
-
 import { Expense } from "@/types/Expense";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text } from "react-native";
 
 type Props = {
@@ -24,17 +20,18 @@ export default function ExpenseForm({
   initialValues,
   onSuccess,
 }: Props) {
-  const [amount, setAmount] = useState(
-    initialValues ? String(initialValues.amount) : "",
-  );
 
-  const [category, setCategory] = useState(
-    initialValues?.category ?? CATEGORIES[0],
-  );
+  const [amount, setAmount] = useState("");
+  const [category, setCategory] = useState(CATEGORIES[0]);
+  const [description, setDescription] = useState("");
 
-  const [description, setDescription] = useState(
-    initialValues?.description ?? "",
-  );
+  useEffect(() => {
+  if (!initialValues) return;
+
+  setAmount(String(initialValues.amount));
+  setCategory(initialValues.category);
+  setDescription(initialValues.description);
+}, [initialValues]);
 
   async function handleSubmit() {
     if (category === CATEGORIES[0]) {
@@ -74,8 +71,12 @@ export default function ExpenseForm({
       }
 
       onSuccess?.();
-    } catch (error) {
-      Alert.alert("Error", "No fue posible conectar con el servidor.");
+    } catch (error: any) {
+      console.log("STATUS:", error.response?.status);
+      console.log("DATA:", error.response?.data);
+      console.log("ERROR:", error.message);
+
+      Alert.alert("Error", "No fue posible actualizar el gasto.");
     }
   }
 
