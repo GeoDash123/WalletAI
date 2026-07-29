@@ -19,20 +19,22 @@ export async function updateExpense(id: number, expense: Expense) {
     "/webhook/55afb5be-8280-4474-b397-fd816428709a/walletia/" + id,
     expense
   );
-
   return response.data;
 }
 
 //Consultar un gasto
 export async function getExpense(id: number): Promise<Expense> {
-  console.log("BaseURL:", api.defaults.baseURL);
-  console.log("URL:", `/webhook/walletia?id=${id}`);
-
   const response = await api.get("/webhook/walletia", {
     params: { id },
   });
+  return response.data;
+}
 
-  console.log("Respuesta:", response.data);
+//Borrar un gasto
+export async function deleteExpense(id: number) {
+  const response = await api.delete(
+    `/webhook/2f922fdd-0fe7-468a-9157-38582ba4d9b0/walletia/${id}`
+  );
 
   return response.data;
 }

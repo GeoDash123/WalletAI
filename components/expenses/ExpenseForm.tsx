@@ -2,12 +2,12 @@ import Card from "@/components/ui/Card";
 import Input from "@/components/ui/Input";
 import PrimaryButton from "@/components/ui/PrimaryButton";
 import Select from "@/components/ui/Select";
-import { createExpense, updateExpense } from "@/services/expenseService";
+import { createExpense, updateExpense, deleteExpense } from "@/services/expenseService";
 import { CATEGORIES } from "@/constants/categories";
 import { Colors } from "@/constants/colors";
 import { Expense } from "@/types/Expense";
 import { useEffect, useState } from "react";
-import { Alert, StyleSheet, Text } from "react-native";
+import { Alert, StyleSheet, Text, View } from "react-native";
 
 type Props = {
   mode?: "create" | "edit";
@@ -80,6 +80,48 @@ export default function ExpenseForm({
     }
   }
 
+  async function handleDelete() {
+
+    console.log("handleDelete");
+    console.log(initialValues);
+
+    if (initialValues?.id === undefined) {
+      return;
+    }
+
+    const id = initialValues.id;
+
+    Alert.alert(
+      "Eliminar gasto",
+      "¿Estás seguro de que deseas eliminar este gasto?",
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteExpense(id);
+
+              Alert.alert("Éxito", "Gasto eliminado correctamente.");
+
+              onSuccess?.();
+            } catch (error: any) {
+              console.log("STATUS:", error.response?.status);
+              console.log("DATA:", error.response?.data);
+              console.log("ERROR:", error.message);
+
+              Alert.alert("Error", "No fue posible eliminar el gasto.");
+            }
+          },
+        },
+      ]
+    );
+  }
+
   return (
     <Card>
       <Text style={styles.title}>
@@ -105,10 +147,26 @@ export default function ExpenseForm({
         style={styles.input}
       />
 
-      <PrimaryButton
-        title={mode === "create" ? "Guardar gasto" : "Guardar cambios"}
-        onPress={handleSubmit}
-      />
+      {mode === "create" ? (
+        <PrimaryButton
+          title="Guardar gasto"
+          onPress={handleSubmit}
+        />
+      ) : (
+        <View style={styles.buttonsContainer}>
+          <PrimaryButton
+            title="Guardar cambios"
+            onPress={handleSubmit}
+          />
+
+          <PrimaryButton
+            title="Eliminar"
+            onPress={handleDelete}
+            style={styles.deleteButton}
+          />
+        </View>
+      )}
+
     </Card>
   );
 }
@@ -135,4 +193,14 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderRadius: 8,
   },
+
+  buttonsContainer: {
+    marginTop: 10,
+    gap: 10,
+  },
+
+  deleteButton: {
+    backgroundColor: Colors.danger,
+  },
+
 });
