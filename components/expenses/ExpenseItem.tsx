@@ -4,13 +4,13 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import { CategoryIcons } from "@/constants/categoryIcons";
 import { Colors } from "@/constants/colors";
-import { Expense } from "@/types/Expense";
+import { ExpenseRecord } from "@/types/Expense";
 import { formatCurrency } from "@/utils/currency";
 
 import Card from "@/components/ui/Card";
 
 type Props = {
-  expense: Expense;
+  expense: ExpenseRecord;
 };
 
 export default function ExpenseItem({ expense }: Props) {
@@ -21,15 +21,9 @@ export default function ExpenseItem({ expense }: Props) {
       expense.category as keyof typeof CategoryIcons
     ] ?? "cash";
 
-  const date = expense.created_at
-    ? new Date(expense.created_at).toLocaleDateString("es-MX")
-    : "";
+  const date = new Date(expense.created_at).toLocaleDateString("es-MX");
 
   function handlePress() {
-    if (expense.id === undefined) {
-      return;
-    }
-
     router.push({
       pathname: "/expense/[id]",
       params: {

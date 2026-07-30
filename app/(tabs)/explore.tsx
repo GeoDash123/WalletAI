@@ -10,9 +10,17 @@ export default function HistoryScreen() {
   const { expenses, loading } = useExpenses();
   const [search, setSearch] = useState("");
   const [category, setCategory] = useState("Todas");
+  const [sortBy, setSortBy] = useState("Más recientes");
+
+  const SORT_OPTIONS = [
+    "Más recientes",
+    "Más antiguos",
+    "Mayor monto",
+    "Menor monto",
+  ];
 
   const filteredExpenses = useMemo(() => {
-    return expenses.filter((expense) => {
+    let result = expenses.filter((expense) => {
       const matchesSearch = expense.description
         .toLowerCase()
         .includes(search.toLowerCase());
@@ -22,7 +30,36 @@ export default function HistoryScreen() {
 
       return matchesSearch && matchesCategory;
     });
-  }, [expenses, search, category]);
+
+    switch (sortBy) {
+      case "Más antiguos":
+        result.sort(
+          (a, b) =>
+            new Date(a.created_at).getTime() -
+            new Date(b.created_at).getTime()
+        );
+        break;
+
+      case "Mayor monto":
+        result.sort((a, b) => Number(b.amount) - Number(a.amount));
+        break;
+
+      case "Menor monto":
+        result.sort((a, b) => Number(a.amount) - Number(b.amount));
+        break;
+
+      default:
+        // Más recientes
+        result.sort(
+          (a, b) =>
+            new Date(b.created_at).getTime() -
+            new Date(a.created_at).getTime()
+        );
+        break;
+    }
+
+    return result;
+  }, [expenses, search, category, sortBy]);
 
   if (loading) {
     return (
@@ -45,6 +82,12 @@ export default function HistoryScreen() {
         value={category}
         items={["Todas", ...CATEGORIES.slice(1)]}
         onChange={setCategory}
+      />
+
+      <Select
+        value={sortBy}
+        items={SORT_OPTIONS}
+        onChange={setSortBy}
       />
 
       <FlatList

@@ -1,6 +1,6 @@
 import ExpenseForm from "@/components/expenses/ExpenseForm";
 import { getExpense } from "@/services/expenseService";
-import { Expense } from "@/types/Expense";
+import { ExpenseRecord } from "@/types/Expense";
 
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
@@ -15,12 +15,9 @@ import { Colors } from "@/constants/colors";
 
 export default function EditExpenseScreen() {
 
-    const { id } = useLocalSearchParams();
-
+    const { id } = useLocalSearchParams<{ id: string }>();
     const router = useRouter();
-
-    const [expense, setExpense] = useState<Expense | null>(null);
-
+    const [expense, setExpense] = useState<ExpenseRecord | null>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -28,17 +25,13 @@ export default function EditExpenseScreen() {
         async function loadExpense() {
 
             try {
-
                 const data = await getExpense(Number(id));
-
                 setExpense(data);
-
+            } catch (error) {
+                console.log(error);
             } finally {
-
                 setLoading(false);
-
             }
-
         }
 
         loadExpense();

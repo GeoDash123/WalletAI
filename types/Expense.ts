@@ -1,13 +1,10 @@
 export interface Expense {
-
-    id?: number;
-
     amount: number;
-
     category: string;
-
     description: string;
+}
 
-    created_at?: string;
-
+export interface ExpenseRecord extends Expense {
+    id: number;
+    created_at: string;
 }

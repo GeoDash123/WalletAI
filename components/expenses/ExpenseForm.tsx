@@ -5,13 +5,13 @@ import Select from "@/components/ui/Select";
 import { createExpense, updateExpense, deleteExpense } from "@/services/expenseService";
 import { CATEGORIES } from "@/constants/categories";
 import { Colors } from "@/constants/colors";
-import { Expense } from "@/types/Expense";
+import { Expense, ExpenseRecord } from "@/types/Expense";
 import { useEffect, useState } from "react";
 import { Alert, StyleSheet, Text, View } from "react-native";
 
 type Props = {
   mode?: "create" | "edit";
-  initialValues?: Expense;
+  initialValues?: ExpenseRecord;
   onSuccess?: () => void;
 };
 
@@ -49,7 +49,7 @@ export default function ExpenseForm({
       return;
     }
 
-    const expense = {
+    const expense: Expense = {
       amount: Number(amount),
       category,
       description,
@@ -65,7 +65,12 @@ export default function ExpenseForm({
         setCategory(CATEGORIES[0]);
         setDescription("");
       } else {
-        await updateExpense(initialValues!.id!, expense);
+
+        if (!initialValues) {
+          return;
+        }
+
+        await updateExpense(initialValues.id, expense);
 
         Alert.alert("Éxito", "Gasto actualizado correctamente.");
       }
@@ -85,11 +90,11 @@ export default function ExpenseForm({
     console.log("handleDelete");
     console.log(initialValues);
 
-    if (initialValues?.id === undefined) {
+    if (!initialValues) {
       return;
     }
 
-    const id = initialValues.id;
+    const { id } = initialValues;
 
     Alert.alert(
       "Eliminar gasto",

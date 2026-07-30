@@ -1,10 +1,10 @@
 import { useEffect, useState } from "react";
-import { Expense } from "../types/Expense";
+import { ExpenseRecord } from "../types/Expense";
 import { getExpenses } from "../services/expenseService";
 
 export function useExpenses() {
 
-    const [expenses, setExpenses] = useState<Expense[]>([]);
+    const [expenses, setExpenses] = useState<ExpenseRecord[]>([]);
     const [loading, setLoading] = useState(true);
 
     async function loadExpenses() {

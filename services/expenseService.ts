@@ -1,4 +1,4 @@
-import { Expense } from "../types/Expense";
+import { Expense, ExpenseRecord } from "../types/Expense";
 import { api } from "./api";
 
 //Registrar gasto
@@ -8,7 +8,7 @@ export async function createExpense(expense: Expense) {
 }
 
 //Consultar Historial
-export async function getExpenses() {
+export async function getExpenses(): Promise<ExpenseRecord[]> {
   const response = await api.get("/webhook/expenses");
   return response.data;
 }
@@ -23,7 +23,7 @@ export async function updateExpense(id: number, expense: Expense) {
 }
 
 //Consultar un gasto
-export async function getExpense(id: number): Promise<Expense> {
+export async function getExpense(id: number): Promise<ExpenseRecord> {
   const response = await api.get("/webhook/walletia", {
     params: { id },
   });
