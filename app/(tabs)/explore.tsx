@@ -3,23 +3,26 @@ import { useMemo, useState } from "react";
 import ExpenseItem from "@/components/expenses/ExpenseItem";
 import { useExpenses } from "../../hooks/useExpenses";
 import Input from "@/components/ui/Input";
+import Select from "@/components/ui/Select";
+import { CATEGORIES } from "@/constants/categories";
 
 export default function HistoryScreen() {
   const { expenses, loading } = useExpenses();
-
   const [search, setSearch] = useState("");
+  const [category, setCategory] = useState("Todas");
 
   const filteredExpenses = useMemo(() => {
-
-    if (!search.trim()) return expenses;
-
-    return expenses.filter((expense) =>
-      expense.description
+    return expenses.filter((expense) => {
+      const matchesSearch = expense.description
         .toLowerCase()
-        .includes(search.toLowerCase())
-  );
+        .includes(search.toLowerCase());
 
-  }, [expenses, search]);
+      const matchesCategory =
+        category === "Todas" || expense.category === category;
+
+      return matchesSearch && matchesCategory;
+    });
+  }, [expenses, search, category]);
 
   if (loading) {
     return (
@@ -36,6 +39,12 @@ export default function HistoryScreen() {
         value={search}
         onChangeText={setSearch}
         style={styles.search}
+      />
+
+      <Select
+        value={category}
+        items={["Todas", ...CATEGORIES.slice(1)]}
+        onChange={setCategory}
       />
 
       <FlatList
