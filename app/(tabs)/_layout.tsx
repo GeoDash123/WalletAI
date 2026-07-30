@@ -1,7 +1,7 @@
 import { Tabs } from "expo-router";
-
 import { IconSymbol } from "@/components/ui/icon-symbol";
 import { Colors } from "@/constants/theme";
+import MaterialCommunityIcons from "@expo/vector-icons/build/MaterialCommunityIcons";
 
 export default function TabLayout() {
 
@@ -61,6 +61,20 @@ export default function TabLayout() {
 
                 }}
 
+            />
+
+            <Tabs.Screen
+                name="statistics"
+                options={{
+                    title: "Estadísticas",
+                    tabBarIcon: ({ color, size }) => (
+                        <MaterialCommunityIcons
+                            name="chart-pie"
+                            color={color}
+                            size={size}
+                        />
+                    ),
+                }}
             />
 
         </Tabs>
