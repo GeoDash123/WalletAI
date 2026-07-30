@@ -1,8 +1,8 @@
 import { ScrollView, StyleSheet } from "react-native";
-
 import DashboardCard from "@/components/dashboard/DashboardCard";
 import ExpenseForm from "@/components/expenses/ExpenseForm";
 import { useDashboard } from "@/hooks/useDashboard";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HomeScreen() {
 
@@ -10,7 +10,9 @@ export default function HomeScreen() {
 
     return (
 
-        <ScrollView contentContainerStyle={styles.container}>
+        <SafeAreaView style={styles.container}>
+
+            <ScrollView>
 
             {dashboard && (
                 <DashboardCard dashboard={dashboard} />
@@ -18,7 +20,9 @@ export default function HomeScreen() {
 
             <ExpenseForm />
 
-        </ScrollView>
+            </ScrollView>
+
+        </SafeAreaView>
 
     );
 

@@ -5,6 +5,7 @@ import { useExpenses } from "../../hooks/useExpenses";
 import Input from "@/components/ui/Input";
 import Select from "@/components/ui/Select";
 import { CATEGORIES } from "@/constants/categories";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function HistoryScreen() {
   const { expenses, loading } = useExpenses();
@@ -70,7 +71,7 @@ export default function HistoryScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
       <Input
         placeholder="Buscar gasto..."
         value={search}
@@ -96,7 +97,7 @@ export default function HistoryScreen() {
         renderItem={({ item }) => <ExpenseItem expense={item} />}
         contentContainerStyle={styles.list}
       />
-    </View>
+    </SafeAreaView>
   );
 }
 
