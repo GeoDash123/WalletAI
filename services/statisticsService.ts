@@ -1,7 +1,7 @@
 import { api } from "./api";
-import { CategoryStatistic } from "@/types/Statistics";
+import { StatisticsResponse } from "@/types/Statistics";
 
-export async function getStatistics(): Promise<CategoryStatistic[]> {
+export async function getStatistics(): Promise<StatisticsResponse[]> {
 
     const response = await api.get("/webhook/statistics");
 

@@ -1,6 +1,11 @@
+import { SummaryStatistic } from "@/types/Statistics";
 import StatisticsCard from "./StatisticsCard";
 
-export default function SummaryCards() {
+type Props = {
+    summary: SummaryStatistic;
+};
+
+export default function SummaryCards({ summary }: Props) {
 
     return (
         <>

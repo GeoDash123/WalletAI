@@ -1,6 +1,11 @@
+import { MonthlyStatistic } from "@/types/Statistics";
 import { Text } from "react-native";
 
-export default function MonthlyLineChart() {
+type Props = {
+    data: MonthlyStatistic[];
+};
+
+export default function MonthlyLineChart({ data }: Props) {
 
     return (
         <Text>

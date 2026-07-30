@@ -1,15 +1,24 @@
 export interface CategoryStatistic {
     category: string;
-    total: string;
+    total: number;
 }
 
 export interface MonthlyStatistic {
     month: string;
-    total: string;
+    total: number;
 }
 
 export interface SummaryStatistic {
-    total: string;
-    average: string;
+    total: number;
+    average: number;
     count: number;
+    highest: number;
+}
+
+export interface StatisticsResponse {
+    statistics: {
+        summary: SummaryStatistic;
+        categories: CategoryStatistic[];
+        monthly: MonthlyStatistic[];
+    };
 }

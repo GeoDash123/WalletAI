@@ -14,12 +14,12 @@ import { Colors } from "@/constants/colors";
 
 import { getStatistics } from "@/services/statisticsService";
 
-import { CategoryStatistic } from "@/types/Statistics";
+import { StatisticsResponse } from "@/types/Statistics";
 
 export default function StatisticsScreen() {
 
     const [data, setData] =
-        useState<CategoryStatistic[]>([]);
+    useState<StatisticsResponse | null>(null);
 
     const [loading, setLoading] =
         useState(true);
@@ -30,10 +30,9 @@ export default function StatisticsScreen() {
 
             try {
 
-                const response =
-                    await getStatistics();
+                const response = await getStatistics();
 
-                setData(response);
+                setData(response[0]);
 
             } finally {
 
@@ -51,23 +50,31 @@ export default function StatisticsScreen() {
         return <ActivityIndicator />;
     }
 
+    if (!data) {
+        return null;
+    }
+
     return (
 
         <ScrollView
             contentContainerStyle={styles.container}
         >
 
-            <SummaryCards />
+            <SummaryCards
+                summary={data.statistics.summary}
+            />
 
             <CategoryPieChart
-                data={data}
+                data={data.statistics.categories}
             />
 
             <CategoryBarChart
-                data={data}
+                data={data.statistics.categories}
             />
 
-            <MonthlyLineChart />
+            <MonthlyLineChart
+                data={data.statistics.monthly}
+            />
 
         </ScrollView>
 
