@@ -15,6 +15,13 @@ export default function RootLayout() {
                     options={{ headerShown: false }}
                 />
 
+                <Stack.Screen
+                    name="expense/[id]"
+                    options={{
+                        headerShown: false,
+                    }}
+                />
+
             </Stack>
 
             <StatusBar style="dark" />

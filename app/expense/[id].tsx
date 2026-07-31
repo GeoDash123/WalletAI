@@ -1,14 +1,18 @@
 import ExpenseForm from "@/components/expenses/ExpenseForm";
 import { getExpense } from "@/services/expenseService";
 import { ExpenseRecord } from "@/types/Expense";
-
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useState } from "react";
+import { SafeAreaView } from "react-native-safe-area-context";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
 import {
     ActivityIndicator,
     ScrollView,
     StyleSheet,
+    Pressable,
+    Text,
+    View
 } from "react-native";
 
 import { Colors } from "@/constants/colors";
@@ -48,15 +52,31 @@ export default function EditExpenseScreen() {
 
     return (
 
-        <ScrollView contentContainerStyle={styles.container}>
+        <SafeAreaView style={styles.container}>
 
-            <ExpenseForm
-                mode="edit"
-                initialValues={expense}
-                onSuccess={() => router.back()}
-            />
+            <View style={styles.header}>
+                <Pressable onPress={() => router.back()}>
+                    <MaterialCommunityIcons
+                        name="arrow-left"
+                        size={28}
+                        color={Colors.text}
+                    />
+                </Pressable>
 
-        </ScrollView>
+                <Text style={styles.title}>
+                    Editar gasto
+                </Text>
+            </View>
+
+            <ScrollView contentContainerStyle={styles.content}>
+                <ExpenseForm
+                    mode="edit"
+                    initialValues={expense}
+                    onSuccess={() => router.back()}
+                />
+            </ScrollView>
+
+        </SafeAreaView>
 
     );
 
@@ -65,9 +85,30 @@ export default function EditExpenseScreen() {
 const styles = StyleSheet.create({
 
     container: {
-        flexGrow: 1,
-        padding: 20,
+        flex: 1,
         backgroundColor: Colors.background,
+    },
+
+    content: {
+        paddingHorizontal: 20,
+        paddingTop: 25,
+        paddingBottom: 40,
+        gap: 25,
+    },
+
+    header: {
+        flexDirection: "row",
+        alignItems: "center",
+        paddingHorizontal: 20,
+        paddingTop: 10,
+        paddingBottom: 10,
+    },
+
+    title: {
+        fontSize: 24,
+        fontWeight: "700",
+        color: Colors.text,
+        marginLeft: 16,
     },
 
 });

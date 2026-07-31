@@ -129,6 +129,7 @@ export default function ExpenseForm({
 
   return (
     <Card>
+      
       <Text style={styles.title}>
         {mode === "create" ? "Registrar gasto" : "Editar gasto"}
       </Text>
@@ -144,7 +145,7 @@ export default function ExpenseForm({
       <Text style={styles.label}>Categoría</Text>
 
       <Select value={category} items={CATEGORIES} onChange={setCategory} />
-
+      
       <Input
         placeholder="Descripción"
         value={description}
