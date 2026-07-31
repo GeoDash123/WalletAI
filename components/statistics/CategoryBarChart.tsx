@@ -1,7 +1,6 @@
-import { Dimensions } from "react-native";
+import { BarChart } from "react-native-gifted-charts";
 
-import { BarChart } from "react-native-chart-kit";
-
+import Card from "@/components/ui/Card";
 import { CategoryStatistic } from "@/types/Statistics";
 
 type Props = {
@@ -12,40 +11,53 @@ export default function CategoryBarChart({
     data,
 }: Props) {
 
+    const chartData = data.map(item => ({
+        value: Number(item.total),
+        label: item.category,
+    }));
+
     return (
 
-        <BarChart
+        <Card>
 
-            width={Dimensions.get("window").width - 40}
+            <BarChart
+                data={chartData}
 
-            height={250}
+                isAnimated
 
-            data={{
-                labels: data.map(item => item.category),
+                frontColor="#3B82F6"
 
-                datasets: [
-                    {
-                        data: data.map(item => Number(item.total))
-                    }
-                ]
-            }}
+                roundedTop
 
-            yAxisLabel="$"
-            yAxisSuffix=""
+                barWidth={34}
 
-            chartConfig={{
-                backgroundGradientFrom: "#fff",
-                backgroundGradientTo: "#fff",
+                spacing={22}
 
-                decimalPlaces: 0,
+                noOfSections={5}
 
-                color: opacity =>
-                    `rgba(59,130,246,${opacity})`,
-            }}
+                maxValue={Math.max(...chartData.map(i => i.value))}
 
-            fromZero
+                yAxisThickness={0}
 
-        />
+                xAxisThickness={0}
+
+                hideRules={false}
+
+                rulesColor="#E5E7EB"
+
+                rulesType="dashed"
+
+                xAxisLabelTextStyle={{
+                    fontSize: 12,
+                }}
+
+                yAxisTextStyle={{
+                    fontSize: 12,
+                }}
+
+            />
+
+        </Card>
 
     );
 
