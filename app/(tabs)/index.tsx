@@ -1,13 +1,9 @@
 import { ScrollView, StyleSheet, Text } from "react-native";
-import DashboardCard from "@/components/dashboard/DashboardCard";
 import ExpenseForm from "@/components/expenses/ExpenseForm";
-import { useDashboard } from "@/hooks/useDashboard";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Colors } from "@/constants/colors";
 
 export default function HomeScreen() {
-
-    const { dashboard } = useDashboard();
 
     function getGreeting() {
         const hour = new Date().getHours();
@@ -40,10 +36,6 @@ export default function HomeScreen() {
                 <Text style={styles.subtitle}>
                     ¿Qué gasto deseas registrar hoy?
                 </Text>
-
-                {dashboard && (
-                    <DashboardCard dashboard={dashboard} />
-                )}
 
                 <ExpenseForm />
 
