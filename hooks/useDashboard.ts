@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
 import { Dashboard } from "@/types/Dashboard";
 import { getDashboard } from "@/services/dashboardService";
+import { useFocusEffect } from "expo-router";
 
 export function useDashboard() {
 
@@ -27,11 +28,11 @@ export function useDashboard() {
 
     }
 
-    useEffect(() => {
-
-        loadDashboard();
-
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            loadDashboard();
+        }, [])
+    );
 
     return {
         dashboard,

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
 import {
     ActivityIndicator,
     ScrollView,
@@ -15,6 +15,7 @@ import { getStatistics } from "@/services/statisticsService";
 import { StatisticsResponse } from "@/types/Statistics";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useFocusEffect } from "expo-router";
 
 export default function StatisticsScreen() {
 
@@ -24,22 +25,30 @@ export default function StatisticsScreen() {
     const [loading, setLoading] =
         useState(true);
 
-    useEffect(() => {
+    useFocusEffect(
+        useCallback(() => {
 
-        async function load() {
+            async function load() {
 
-            try {
-                const response = await getStatistics();
-                setData(response[0]);
-            } finally {
-                setLoading(false);
+                setLoading(true);
+
+                try {
+
+                    const response = await getStatistics();
+                    setData(response[0]);
+
+                } finally {
+
+                    setLoading(false);
+
+                }
+
             }
 
-        }
+            load();
 
-        load();
-
-    }, []);
+        }, [])
+    );
 
     if (loading) {
         return <ActivityIndicator />;

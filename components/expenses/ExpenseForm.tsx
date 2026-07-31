@@ -87,9 +87,6 @@ export default function ExpenseForm({
 
   async function handleDelete() {
 
-    console.log("handleDelete");
-    console.log(initialValues);
-
     if (!initialValues) {
       return;
     }

@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
 import { ExpenseRecord } from "../types/Expense";
 import { getExpenses } from "../services/expenseService";
+import { useFocusEffect } from "expo-router";
 
 export function useExpenses() {
 
@@ -27,11 +28,11 @@ export function useExpenses() {
 
     }
 
-    useEffect(() => {
-
-        loadExpenses();
-
-    }, []);
+    useFocusEffect(
+        useCallback(() => {
+            loadExpenses();
+        }, [])
+    );
 
     return {
         expenses,
