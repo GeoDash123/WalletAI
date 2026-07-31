@@ -72,31 +72,42 @@ export default function HistoryScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Input
-        placeholder="Buscar gasto..."
-        value={search}
-        onChangeText={setSearch}
-        style={styles.search}
-      />
 
-      <Select
-        value={category}
-        items={["Todas", ...CATEGORIES.slice(1)]}
-        onChange={setCategory}
-      />
+      <View style={styles.filters}>
 
-      <Select
-        value={sortBy}
-        items={SORT_OPTIONS}
-        onChange={setSortBy}
-      />
+        <Input
+          placeholder="Buscar gasto..."
+          value={search}
+          onChangeText={setSearch}
+          style={styles.search}
+        />
+
+        <Select
+          value={category}
+          items={["Todas", ...CATEGORIES.slice(1)]}
+          onChange={setCategory}
+        />
+
+        <Select
+          value={sortBy}
+          items={SORT_OPTIONS}
+          onChange={setSortBy}
+        />
+
+      </View>
 
       <FlatList
         data={filteredExpenses}
         keyExtractor={(item) => item.id!.toString()}
-        renderItem={({ item }) => <ExpenseItem expense={item} />}
+        renderItem={({ item }) => (
+          <ExpenseItem expense={item} />
+        )}
+        ItemSeparatorComponent={() => (
+          <View style={{ height: 16 }} />
+        )}
         contentContainerStyle={styles.list}
       />
+
     </SafeAreaView>
   );
 }
@@ -105,7 +116,11 @@ export default function HistoryScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 15,
+  },
+
+  filters: {
+    paddingHorizontal: 15,
+    paddingTop: 15,
   },
 
   search: {
@@ -113,6 +128,7 @@ const styles = StyleSheet.create({
   },
 
   list: {
+    paddingHorizontal: 15,
     paddingBottom: 20,
   },
 

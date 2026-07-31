@@ -3,18 +3,18 @@ import {
     ActivityIndicator,
     ScrollView,
     StyleSheet,
+    Text,
+    View,
 } from "react-native";
 
 import CategoryBarChart from "@/components/statistics/CategoryBarChart";
 import CategoryPieChart from "@/components/statistics/CategoryPieChart";
-import MonthlyLineChart from "@/components/statistics/MonthlyLineChart";
 import SummaryCards from "@/components/statistics/SummaryCards";
-
 import { Colors } from "@/constants/colors";
-
 import { getStatistics } from "@/services/statisticsService";
-
 import { StatisticsResponse } from "@/types/Statistics";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function StatisticsScreen() {
 
@@ -29,15 +29,10 @@ export default function StatisticsScreen() {
         async function load() {
 
             try {
-
                 const response = await getStatistics();
-
                 setData(response[0]);
-
             } finally {
-
                 setLoading(false);
-
             }
 
         }
@@ -54,29 +49,72 @@ export default function StatisticsScreen() {
         return null;
     }
 
+    function SectionTitle({
+        title,
+        icon,
+    }: {
+        title: string;
+        icon: keyof typeof MaterialCommunityIcons.glyphMap;
+    }) {
+        return (
+            <View style={styles.sectionHeader}>
+                <MaterialCommunityIcons
+                    name={icon}
+                    size={22}
+                    color={Colors.primary}
+                />
+
+                <Text style={styles.heading}>
+                    {title}
+                </Text>
+            </View>
+        );
+    }
+
     return (
 
-        <ScrollView
-            contentContainerStyle={styles.container}
+        <SafeAreaView
+            style={styles.safeArea}
+            edges={["top"]}
         >
 
-            <SummaryCards
-                summary={data.statistics.summary}
-            />
+            <ScrollView
+            contentContainerStyle={styles.container}
+            >
 
-            <CategoryPieChart
-                data={data.statistics.categories}
-            />
+                <SectionTitle
+                    title="Resumen"
+                    icon="view-dashboard"
+                />
 
-            <CategoryBarChart
-                data={data.statistics.categories}
-            />
+                <SummaryCards
+                    summary={data.statistics.summary}
+                />
 
-            <MonthlyLineChart
-                data={data.statistics.monthly}
-            />
+                <SectionTitle
+                    title="Distribución por categoría"
+                    icon="chart-pie"
+                />
 
-        </ScrollView>
+                <CategoryPieChart
+                    data={data.statistics.categories}
+                />
+
+                <SectionTitle
+                    title="Gastos por categoría"
+                    icon="chart-bar"
+                />
+
+                <CategoryBarChart
+                    data={data.statistics.categories}
+                />
+
+            </ScrollView>
+
+
+        </SafeAreaView>
+
+        
 
     );
 
@@ -87,8 +125,28 @@ const styles = StyleSheet.create({
     container: {
         flexGrow: 1,
         padding: 20,
+        gap: 20,
+    },
+
+    heading: {
+        fontSize: 22,
+        fontWeight: "700",
+        color: Colors.text,
+        lineHeight: 24,
+        includeFontPadding: false,
+        textAlignVertical: "center",
+    },
+
+    sectionHeader: {
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 8,
+        marginBottom: -10,
+    },
+
+    safeArea: {
+        flex: 1,
         backgroundColor: Colors.background,
-        gap: 25,
     },
 
 });

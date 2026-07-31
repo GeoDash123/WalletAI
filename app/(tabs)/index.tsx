@@ -1,24 +1,51 @@
-import { ScrollView, StyleSheet } from "react-native";
+import { ScrollView, StyleSheet, Text } from "react-native";
 import DashboardCard from "@/components/dashboard/DashboardCard";
 import ExpenseForm from "@/components/expenses/ExpenseForm";
 import { useDashboard } from "@/hooks/useDashboard";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Colors } from "@/constants/colors";
 
 export default function HomeScreen() {
 
     const { dashboard } = useDashboard();
 
+    function getGreeting() {
+        const hour = new Date().getHours();
+
+        if (hour >= 5 && hour < 12) {
+            return "Buenos días";
+        }
+
+        if (hour >= 12 && hour < 19) {
+            return "Buenas tardes";
+        }
+
+        return "Buenas noches";
+    }
+
+    const greeting = getGreeting();
+
     return (
 
         <SafeAreaView style={styles.container}>
 
-            <ScrollView>
+            <ScrollView
+                contentContainerStyle={styles.content}
+            >
 
-            {dashboard && (
-                <DashboardCard dashboard={dashboard} />
-            )}
+                <Text style={styles.greeting}>
+                    {greeting}
+                </Text>
 
-            <ExpenseForm />
+                <Text style={styles.subtitle}>
+                    ¿Qué gasto deseas registrar hoy?
+                </Text>
+
+                {dashboard && (
+                    <DashboardCard dashboard={dashboard} />
+                )}
+
+                <ExpenseForm />
 
             </ScrollView>
 
@@ -35,10 +62,27 @@ const styles = StyleSheet.create({
     },
 
     container: {
+        flex: 1,
+        backgroundColor: Colors.background,
+    },
+
+    content: {
         paddingHorizontal: 20,
         paddingTop: 25,
         paddingBottom: 40,
-        flexGrow: 1,
+        gap: 25,
+    },
+
+    greeting: {
+        fontSize: 28,
+        fontWeight: "700",
+        marginBottom: 10,
+    },
+
+    subtitle: {
+        fontSize: 16,
+        color: "#6B7280",
+        marginBottom: 20,
     },
 
 });
