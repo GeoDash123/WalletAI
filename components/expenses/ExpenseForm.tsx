@@ -13,12 +13,19 @@ type Props = {
   mode?: "create" | "edit";
   initialValues?: ExpenseRecord;
   onSuccess?: () => void;
+
+  scannedValues?: {
+    amount: number;
+    description: string;
+    category: string;
+  } | null;
 };
 
 export default function ExpenseForm({
   mode = "create",
   initialValues,
   onSuccess,
+  scannedValues,
 }: Props) {
 
   const [amount, setAmount] = useState("");
@@ -26,12 +33,24 @@ export default function ExpenseForm({
   const [description, setDescription] = useState("");
 
   useEffect(() => {
-  if (!initialValues) return;
+    if (!initialValues) return;
 
-  setAmount(String(initialValues.amount));
-  setCategory(initialValues.category);
-  setDescription(initialValues.description);
-}, [initialValues]);
+    setAmount(String(initialValues.amount));
+    setCategory(initialValues.category);
+    setDescription(initialValues.description);
+  }, [initialValues]);
+
+  useEffect(() => {
+
+    if (!scannedValues) {
+      return;
+    }
+
+    setAmount(String(scannedValues.amount));
+    setDescription(scannedValues.description);
+    setCategory(scannedValues.category);
+
+  }, [scannedValues]);
 
   async function handleSubmit() {
     if (category === CATEGORIES[0]) {
