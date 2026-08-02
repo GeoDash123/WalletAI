@@ -1,0 +1,109 @@
+{
+  "name": "Estadisticas",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "statistics",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        160,
+        -544
+      ],
+      "id": "45a22801-c44b-4692-8ceb-8866db2fd8c3",
+      "name": "Webhook",
+      "webhookId": "d28f23b4-73ce-4c16-ac02-a24a1bcd1a46"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        64,
+        208
+      ],
+      "id": "018a7cb7-2881-4f9e-8949-ec8b2e96db3a",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        576,
+        -544
+      ],
+      "id": "ac784606-8c11-4328-88c1-4a72a87bee28",
+      "name": "Respond to Webhook1"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT json_build_object(\n    'summary', (\n        SELECT json_build_object(\n            'total', SUM(amount),\n            'average', AVG(amount),\n            'count', COUNT(*),\n            'highest', MAX(amount)\n        )\n        FROM expenses\n    ),\n    'categories', (\n        SELECT json_agg(c)\n        FROM (\n            SELECT\n                category,\n                SUM(amount) AS total\n            FROM expenses\n            GROUP BY category\n            ORDER BY total DESC\n        ) c\n    ),\n    'monthly', (\n        SELECT json_agg(m)\n        FROM (\n            SELECT\n                TO_CHAR(created_at, 'Mon') AS month,\n                SUM(amount) AS total\n            FROM expenses\n            GROUP BY DATE_TRUNC('month', created_at), month\n            ORDER BY DATE_TRUNC('month', created_at)\n        ) m\n    )\n) AS statistics;",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        368,
+        -544
+      ],
+      "id": "76cea842-ae0e-4407-9e46-c5ae6ecd240b",
+      "name": "Postgres",
+      "credentials": {
+        "postgres": {
+          "id": "yyJZv1dgjsKUBRWZ",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Postgres",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Postgres": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "a203a421-22e0-4137-b163-b7ef3f49267b",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d8bf8987a2ec474af2592a19389507e83f652fd9287c7b28b9d52c34d83a32ab"
+  },
+  "nodeGroups": [],
+  "id": "H4srpqUimHk53QKe",
+  "tags": []
+}

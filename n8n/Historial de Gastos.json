@@ -1,0 +1,113 @@
+{
+  "name": "Historial de Gastos",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "expenses",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -496,
+        0
+      ],
+      "id": "5a51a012-090d-4a7c-a334-1445e10e50c4",
+      "name": "Webhook",
+      "webhookId": "aff85f28-e0cd-456c-bf1c-a8f34ec2451c"
+    },
+    {
+      "parameters": {
+        "respondWith": "allIncomingItems",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        -80,
+        0
+      ],
+      "id": "ae671391-10d3-484e-b5bf-b8dc8b158a59",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "operation": "select",
+        "schema": {
+          "__rl": true,
+          "mode": "list",
+          "value": "public"
+        },
+        "table": {
+          "__rl": true,
+          "value": "expenses",
+          "mode": "list",
+          "cachedResultName": "expenses"
+        },
+        "sort": {
+          "values": [
+            {
+              "column": "created_at",
+              "direction": "DESC"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        -288,
+        0
+      ],
+      "id": "2a847aa5-9100-43e1-bbec-b3b54fef1a4c",
+      "name": "Select rows from a table",
+      "credentials": {
+        "postgres": {
+          "id": "yyJZv1dgjsKUBRWZ",
+          "name": "Postgres account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Select rows from a table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Select rows from a table": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "3ff0e66c-3ca9-41e3-9334-6a6c29b467ac",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d8bf8987a2ec474af2592a19389507e83f652fd9287c7b28b9d52c34d83a32ab"
+  },
+  "nodeGroups": [],
+  "id": "qMiQJZ7CdfdRStBT",
+  "tags": []
+}

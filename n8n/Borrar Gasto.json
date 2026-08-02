@@ -1,0 +1,97 @@
+{
+  "name": "Borrar Gasto",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "DELETE",
+        "path": "walletia/:id",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "cae2a437-b6c8-4275-97ed-809e4f3e5713",
+      "name": "Webhook",
+      "webhookId": "2f922fdd-0fe7-468a-9157-38582ba4d9b0"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "DELETE FROM expenses\nWHERE id = $1;",
+        "options": {
+          "queryReplacement": "=1 -> {{ $json.params.id }}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        208,
+        0
+      ],
+      "id": "53a6e975-a5d8-417e-a025-6930360ff137",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "yyJZv1dgjsKUBRWZ",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        416,
+        0
+      ],
+      "id": "fda8a3fb-0f33-4a6a-ac7e-ff7cb54b826d",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "09c6a4ce-49bf-4d22-a0b2-67115fd0eb77",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d8bf8987a2ec474af2592a19389507e83f652fd9287c7b28b9d52c34d83a32ab"
+  },
+  "nodeGroups": [],
+  "id": "on7mP1Vb6iHN4ARR",
+  "tags": []
+}

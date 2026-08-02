@@ -1,0 +1,145 @@
+{
+  "name": "Ticket Scanner",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "scan-ticket",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "70bb072f-c146-48b1-9fb9-18a983b5ccaf",
+      "name": "Webhook",
+      "webhookId": "a6fac577-988e-4835-9884-24031ba50300"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        864,
+        0
+      ],
+      "id": "c078a109-bd93-4b13-abd8-3dfbf0251aaa",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n{\n    json: {\n        binary: items[0].binary\n    }\n}\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        208,
+        0
+      ],
+      "id": "45d6c058-00d6-4c9a-928a-5c12f6f6a80a",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "sendHeaders": true,
+        "specifyHeaders": "json",
+        "jsonHeaders": "{\n  \"Authorization\": \"Bearer gsk_XXXXXXXXXXXXXXXX\",\n  \"Content-Type\": \"application/json\"\n}",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{\n({\n  model: \"qwen/qwen3.6-27b\",\n\n  messages: [\n    {\n      role: \"system\",\n      content: `Eres un sistema especializado en extraer información de tickets y comprobantes de compra.\n\nTu única tarea es extraer exactamente estos tres datos:\n\n1. MONTO:\nBusca el importe TOTAL FINAL indicado explícitamente en el comprobante.\n\nPrioriza textos como:\n- TOTAL\n- IMPORTE TOTAL\n- TOTAL OPERACIONES\n- TOTAL A PAGAR\n- IMPORTE TOTAL OPERACIONES\n\nIMPORTANTE:\n- NO calcules el total.\n- NO sumes impuestos.\n- NO restes impuestos.\n- NO uses el IVA como total.\n- NO uses subtotales.\n- NO uses descuentos como total.\n- NO uses números de ticket, fechas, identificadores o cantidades.\n- Copia el monto total que aparece explícitamente impreso.\n- Si el decimal utiliza coma, conviértelo a punto.\n\n2. DESCRIPCION:\nUsa el nombre del comercio o establecimiento.\nDebe ser una descripción corta.\n\n3. CATEGORIA:\nClasifica el gasto EXACTAMENTE en una de estas categorías:\n\nComida\nTransporte\nSalud\nEducación\nEntretenimiento\nHogar\nOtros\n\nNO expliques tu razonamiento.\nNO describas cómo analizaste la imagen.\nNO muestres cálculos.\nNO uses Markdown.\n\nTu respuesta final debe contener EXACTAMENTE:\n\nMONTO|DESCRIPCION|CATEGORIA\n\nEjemplo:\n\n125.50|OXXO|Comida\n\nNo escribas absolutamente nada después del resultado.`\n    },\n\n    {\n      role: \"user\",\n      content: [\n        {\n          type: \"text\",\n          text: `Analiza este comprobante.\n\nIdentifica el monto total final explícitamente indicado en el documento, sin realizar cálculos.\n\nDespués identifica el comercio y clasifica el gasto.\n\nResponde únicamente:\nMONTO|DESCRIPCION|CATEGORIA`\n        },\n\n        {\n          type: \"image_url\",\n          image_url: {\n            url: $(\"Webhook\").item.json.body.image\n          }\n        }\n      ]\n    }\n  ],\n\n  temperature: 0,\n  max_completion_tokens: 2000\n})\n}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        416,
+        0
+      ],
+      "id": "5b72b253-c0bb-4560-8e32-a544d50d7edf",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const content = $json.choices[0].message.content;\n\n// Eliminar todo el razonamiento de Qwen\nconst cleanContent = content\n    .replace(/<think>[\\s\\S]*?<\\/think>/gi, \"\")\n    .trim();\n\nconsole.log(\"RESPUESTA LIMPIA:\", cleanContent);\n\nconst lines = cleanContent\n    .split(\"\\n\")\n    .map(line => line.trim())\n    .filter(line => line.length > 0);\n\nconst result = lines.find(line => line.includes(\"|\"));\n\nif (!result) {\n    throw new Error(\n        \"Groq no devolvió el formato esperado: \" + cleanContent\n    );\n}\n\nconst parts = result.split(\"|\");\n\nif (parts.length !== 3) {\n    throw new Error(\n        \"Formato incorrecto: \" + result\n    );\n}\n\nconst amountText = parts[0]\n    .trim()\n    .replace(\",\", \".\");\n\nconst amount = Number(amountText);\n\nif (isNaN(amount)) {\n    throw new Error(\n        \"Monto inválido: \" + parts[0]\n    );\n}\n\nconst description = parts[1].trim();\nconst category = parts[2].trim();\n\nreturn [\n    {\n        json: {\n            amount,\n            description,\n            category\n        }\n    }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        624,
+        0
+      ],
+      "id": "abbb21f1-e33a-4f89-a6f0-f12bb2774158",
+      "name": "Code in JavaScript1"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "c0a9aadb-82b8-429b-bbf0-367f0b822113",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d8bf8987a2ec474af2592a19389507e83f652fd9287c7b28b9d52c34d83a32ab"
+  },
+  "nodeGroups": [],
+  "id": "Wn7tS2582qTBDcQU",
+  "tags": []
+}

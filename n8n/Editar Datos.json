@@ -1,0 +1,123 @@
+{
+  "name": "Editar Datos",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "PUT",
+        "path": "walletia/:id",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -240,
+        0
+      ],
+      "id": "3ef15c35-52ed-4d95-b163-ce65bf969b78",
+      "name": "Webhook",
+      "webhookId": "55afb5be-8280-4474-b397-fd816428709a"
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body;\nconst id = Number($input.first().json.params.id);\n\nreturn [\n  {\n    json: {\n      id,\n      amount: Number(body.amount),\n      category: body.category,\n      description: body.description,\n    },\n  },\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        0
+      ],
+      "id": "33eed8ed-9675-4ba7-9f27-b66634106598",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE expenses\nSET\n    amount = $1,\n    category = $2,\n    description = $3\nWHERE id = $4;",
+        "options": {
+          "queryReplacement": "=1 → {{$json.amount}}\n\n2 → {{$json.category}}\n\n3 → {{$json.description}}\n\n4 → {{$json.id}}"
+        }
+      },
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 2.6,
+      "position": [
+        176,
+        0
+      ],
+      "id": "198031d9-57dc-4ead-9d64-5ed968bf99d6",
+      "name": "Execute a SQL query",
+      "credentials": {
+        "postgres": {
+          "id": "yyJZv1dgjsKUBRWZ",
+          "name": "Postgres account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"message\": \"Gasto actualizado\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        384,
+        0
+      ],
+      "id": "bfd64cfb-1821-401c-a064-e421961a3e15",
+      "name": "Respond to Webhook"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "Execute a SQL query",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Execute a SQL query": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "96516f7f-9415-47b2-93db-c9f332e3c52e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "d8bf8987a2ec474af2592a19389507e83f652fd9287c7b28b9d52c34d83a32ab"
+  },
+  "nodeGroups": [],
+  "id": "r3R2k22jfc18LQ8p",
+  "tags": []
+}
