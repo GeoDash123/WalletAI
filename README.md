@@ -109,7 +109,7 @@ Las categorías utilizadas actualmente son:
 
 ## Estructura del proyecto
 
-El proyecto está organizado separando las pantallas de la aplicación, componentes reutilizables, servicios de comunicación con el backend, hooks, tipos y constantes.
+El proyecto está organizado separando las pantallas de la aplicación, componentes reutilizables, servicios de comunicación con el backend, hooks, workflows de n8n, tipos y constantes.
 
 ```text
 WalletIA/
