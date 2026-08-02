@@ -229,7 +229,6 @@ WalletIA/
 - `types/`: interfaces y tipos de TypeScript utilizados para modelar los datos de la aplicación.
 - `assets/images/`: imágenes, iconos y recursos gráficos.
 - `docker-compose.yml`: configuración de los servicios ejecutados mediante Docker.
-```
 
 ## Base de datos
 
