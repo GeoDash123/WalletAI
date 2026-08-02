@@ -10,15 +10,28 @@ export function useExpenses() {
 
     async function loadExpenses() {
 
+        setLoading(true);
+
         try {
 
             const data = await getExpenses();
 
-            setExpenses(data);
+            if (Array.isArray(data)) {
+                setExpenses(data);
+            } else {
+                console.error(
+                    "La API no devolvió un arreglo de gastos:",
+                    data
+                );
+
+                setExpenses([]);
+            }
 
         } catch (error) {
 
-            console.log(error);
+            console.error("Error al cargar gastos:", error);
+
+            setExpenses([]);
 
         } finally {
 
@@ -39,5 +52,4 @@ export function useExpenses() {
         loading,
         reload: loadExpenses
     };
-
 }

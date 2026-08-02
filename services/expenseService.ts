@@ -9,7 +9,18 @@ export async function createExpense(expense: Expense) {
 
 //Consultar Historial
 export async function getExpenses(): Promise<ExpenseRecord[]> {
+
   const response = await api.get("/webhook/expenses");
+
+  if (!Array.isArray(response.data)) {
+    console.error(
+      "Respuesta inválida de /webhook/expenses:",
+      response.data
+    );
+
+    return [];
+  }
+
   return response.data;
 }
 
